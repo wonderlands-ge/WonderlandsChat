@@ -2,6 +2,8 @@ package me.imlukas.chatcolorgui;
 
 import lombok.Getter;
 import me.imlukas.chatcolorgui.command.ChatColorCommand;
+import me.imlukas.chatcolorgui.command.ChatColorResetCommand;
+import me.imlukas.chatcolorgui.data.color.ColorParser;
 import me.imlukas.chatcolorgui.data.sql.SQLDatabase;
 import me.imlukas.chatcolorgui.data.sql.constants.ColumnType;
 import me.imlukas.chatcolorgui.data.sql.data.ColumnData;
@@ -22,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 @Getter
 public final class ChatColorPlugin extends JavaPlugin {
 
+    private ColorParser colorParser;
     private MessagesFile messages;
     private CommandManager commandManager;
     private MenuRegistry menuRegistry;
@@ -35,6 +38,9 @@ public final class ChatColorPlugin extends JavaPlugin {
         saveDefaultConfig();
         saveResource("menu/colorlist.yml", false);
 
+        colorParser = new ColorParser(this);
+        colorParser.parse();
+
         sqlDatabase = new SQLDatabase(getConfig().getConfigurationSection("mysql"));
 
         messages = new MessagesFile(this);
@@ -44,6 +50,7 @@ public final class ChatColorPlugin extends JavaPlugin {
         playerStorage = new PlayerStorage();
 
         commandManager.register(new ChatColorCommand(this));
+        commandManager.register(new ChatColorResetCommand(this));
 
         registerListener(new PlayerJoinListener(this));
         registerListener(new PlayerQuitListener(this));

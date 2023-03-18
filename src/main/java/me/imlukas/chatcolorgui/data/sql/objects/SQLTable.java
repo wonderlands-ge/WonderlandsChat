@@ -104,15 +104,12 @@ public class SQLTable {
                     Object ar = args[index];
 
                     if (ar instanceof String) {
-                        System.out.println(ar);
                         statement.setString(index + 1, (String) ar);
                         continue;
                     }
 
                     statement.setObject(index + 1, args[index]);
                 }
-
-                System.out.println(statement.toString());
 
                 if(query.contains("SELECT") || query.contains("select") || query.contains("Select")) {
                     return statement.executeQuery();

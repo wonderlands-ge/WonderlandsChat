@@ -3,6 +3,7 @@ package me.imlukas.chatcolorgui.gui;
 import com.google.common.collect.ImmutableMap;
 import me.imlukas.chatcolorgui.ChatColorPlugin;
 import me.imlukas.chatcolorgui.data.PlayerData;
+import me.imlukas.chatcolorgui.data.color.ColorParser;
 import me.imlukas.chatcolorgui.storage.PlayerStorage;
 import me.imlukas.chatcolorgui.utils.TextUtil;
 import me.imlukas.chatcolorgui.utils.menu.base.ConfigurableMenu;
@@ -12,32 +13,13 @@ import me.imlukas.chatcolorgui.utils.menu.layer.BaseLayer;
 import me.imlukas.chatcolorgui.utils.storage.MessagesFile;
 import me.imlukas.chatcolorgui.utils.text.Placeholder;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Dye;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 public class ChatColorMenu {
-
-    // I hate java 8. :)
-    private static final Map<String, String> COLORS = ImmutableMap.<String, String>builder()
-            .put("red", "&c")
-            .put("green", "&2")
-            .put("gold", "&6")
-            .put("blue", "&9")
-            .put("purple", "&5")
-            .put("cyan", "&3")
-            .put("gray", "&7")
-            .put("dark_red", "&4")
-            .put("pink", "&d")
-            .put("lime", "&a")
-            .put("dark_blue", "&1")
-            .put("yellow", "&e")
-            .put("aqua", "&b")
-            .put("magenta", "&d")
-            .build();
 
     private static final Map<String, String> FORMATS = ImmutableMap.<String, String>builder()
             .put("Strikethrough", "&m")
@@ -48,20 +30,19 @@ public class ChatColorMenu {
             .build();
     private final ChatColorPlugin plugin;
     private final PlayerStorage playerStorage;
+    private final ColorParser colorParser;
     private final MessagesFile messages;
 
     public ChatColorMenu(ChatColorPlugin plugin) {
         this.plugin = plugin;
         this.playerStorage = plugin.getPlayerStorage();
+        this.colorParser = plugin.getColorParser();
         this.messages = plugin.getMessages();
     }
 
     public void open(Player viewer) {
-
         ConfigurableMenu baseMenu = (ConfigurableMenu) plugin.getMenuRegistry().create("colorlist", viewer);
         ConfigurationApplicator applicator = baseMenu.getApplicator();
-
-        int slot = 10;
 
         BaseLayer layer = new BaseLayer(baseMenu);
 
@@ -89,72 +70,124 @@ public class ChatColorMenu {
         // register format buttons
         for (Map.Entry<String, String> entry : FORMATS.entrySet()) {
 
+            String formatName = TextUtil.uncapitalize(entry.getKey());
             String formatChar = entry.getKey().substring(0, 1).toLowerCase();
+            String formatCode = entry.getValue();
 
-            applicator.registerButton(layer, formatChar, () -> {
+            Button formatButton = applicator.registerButton(layer, formatChar);
+
+            formatButton.setClickAction((event) -> {
                 if (!viewer.hasPermission("chatcolor.*")) {
-                    if (!viewer.hasPermission("chatcolor." + entry.getKey().toLowerCase())) {
+                    if (!viewer.hasPermission("chatcolor." + formatName)) {
                         messages.sendMessage(viewer, "no-permission");
                         return;
                     }
                 }
-                playerData.setFormat(entry.getValue());
+
+                setSelectedFormat(formatButton.getDisplayItem(), formatName, applicator);
+
+                playerData.setFormat(formatCode);
                 messages.sendMessage(viewer, "format-set", new Placeholder<>("format", TextUtil.colorAndCapitalize(entry.getValue()
                         + entry.getKey())));
+                open(viewer);
             });
+
+
+            if (!formatName.equalsIgnoreCase("no format")) {
+                if (!viewer.hasPermission("chatcolor." + formatName)) {
+
+                    if (playerData.getFormat().equalsIgnoreCase(formatCode)) {
+                        playerData.setFormat("");
+                    }
+
+                    ItemMeta meta = formatButton.getDisplayItem().getItemMeta();
+                    String noPerm = applicator.getConfig().getString("items." +  formatChar + ".lore-no-perm");
+                    noPerm = noPerm.replace("%format%", formatName);
+                    meta.setLore(Collections.singletonList(TextUtil.color(noPerm)));
+                    formatButton.getDisplayItem().setItemMeta(meta);
+                }
+            }
+
+            if (playerData.getFormat().equalsIgnoreCase(formatCode)) {
+                setSelectedFormat(formatButton.getDisplayItem(), formatChar, applicator);
+            }
+
+            baseMenu.forceUpdate();
         }
 
-        String hasPerm = applicator.getConfig().getString("lore-perm");
-        String noPerm = applicator.getConfig().getString("lore-no-perm");
-        // register color buttons
-        for (Map.Entry<String, String> colorEntry : COLORS.entrySet()) {
+        for (Map.Entry<String, ItemStack> colorEntry : colorParser.getColorsMap().entrySet()) {
             String colorName = colorEntry.getKey();
-            String colorCode = colorEntry.getValue();
+            String displayName = colorParser.getDisplayName(colorName);
+            String color = colorParser.getDisplayColor(colorName);
+            int slot = colorParser.getSlot(colorName);
 
-            Button colorButton = applicator.registerButton(layer, colorName, () -> {
+            List<Placeholder<Player>> placeholderList = new ArrayList<>();
+            placeholderList.add(new Placeholder<>("color", TextUtil.colorAndCapitalize(color
+                    + displayName)));
+
+            ItemStack colorItem = colorEntry.getValue();
+            Button colorButton = new Button(colorItem.clone());
+
+            colorButton.setClickAction((event) -> {
                 if (!viewer.hasPermission("chatcolor.*")) {
-                    if (!viewer.hasPermission("chatcolor." + colorEntry.getKey())) {
+                    if (!viewer.hasPermission("chatcolor." + colorName)) {
                         messages.sendMessage(viewer, "no-permission");
                         return;
                     }
                 }
 
-                playerData.setRandomColor(false);
+                setSelected(colorButton.getDisplayItem(), colorName);
 
-                playerData.setColor(colorEntry.getValue());
-                messages.sendMessage(viewer, "color-set", new Placeholder<>("color", TextUtil.colorAndCapitalize(colorCode
-                        + colorName.replace("_", " "))));
+                playerData.setRandomColor(false);
+                playerData.setColor(color);
+                messages.sendMessage(viewer, "color-set", placeholderList);
+                open(viewer);
             });
 
-            ItemMeta meta = colorButton.getDisplayItem().getItemMeta();
+            colorButton.setItemPlaceholders(placeholderList);
 
-            String hasPermCopy = hasPerm;
-            hasPermCopy = hasPermCopy.replace("%color%", TextUtil.color(colorCode + colorName.replace("_", " ")));
 
-            if (viewer.hasPermission("chatcolor." + colorName)) {
-                meta.setLore(Collections.singletonList(TextUtil.color(hasPermCopy)));
-            } else {
-                meta.setLore(Collections.singletonList(TextUtil.color(noPerm)));
+            if (!viewer.hasPermission("chatcolor." + colorName)) {
+
+                if (playerData.getColor().equalsIgnoreCase(color)) {
+                    playerData.setColor("");
+                }
+
+                List<String> noPerm = colorParser.getNoPermLore(colorName);
+                noPerm.replaceAll(TextUtil::color);
+                noPerm.replaceAll(s -> s.replace("%color%", displayName));
+
+                ItemMeta meta = colorButton.getDisplayItem().getItemMeta();
+                meta.setLore(noPerm);
+                colorButton.getDisplayItem().setItemMeta(meta);
             }
 
-            colorButton.getDisplayItem().setItemMeta(meta);
+            if (playerData.getColor().equalsIgnoreCase(color)) {
+                setSelected(colorButton.getDisplayItem(), colorName);
+            }
+
             baseMenu.setElement(slot, colorButton);
-
-            // not the best way of handling slots, but here works fine.
-            if (slot == 16) {
-                slot = 19;
-                continue;
-            }
-
-            if (slot == 25){
-                slot = 30;
-                continue;
-            }
-            slot++;
         }
 
         baseMenu.addRenderable(layer);
         baseMenu.forceUpdate();
         baseMenu.open();
+    }
+
+
+    public void setSelected(ItemStack item, String color) {
+        ItemMeta meta = item.getItemMeta();
+
+        List<String> selected = TextUtil.color(colorParser.getSelectedLore(color));
+        meta.setLore(selected);
+        item.setItemMeta(meta);
+    }
+
+    public void setSelectedFormat(ItemStack item, String format, ConfigurationApplicator applicator) {
+        ItemMeta meta = item.getItemMeta();
+
+        List<String> selected = TextUtil.color(applicator.getConfig().getStringList("items." + format + ".selected"));
+        meta.setLore(selected);
+        item.setItemMeta(meta);
     }
 }

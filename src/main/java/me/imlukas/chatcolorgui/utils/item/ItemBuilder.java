@@ -203,8 +203,7 @@ public class ItemBuilder {
             meta.addEnchant(Enchantment.LUCK, 123, true);
         }
 
-
-        meta.setUnbreakable(unbreakable);
+        meta.spigot().setUnbreakable(unbreakable);
 
         if (!enchantments.isEmpty()) {
             for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {

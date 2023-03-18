@@ -32,6 +32,12 @@ public class PlayerData {
         this.color = color;
     }
 
+    public void reset() {
+        this.format = "";
+        this.color = "";
+        this.randomColor = false;
+    }
+
     public UUID getUUID() {
         return uuid;
     }
@@ -72,6 +78,4 @@ public class PlayerData {
     public boolean isRandomColor() {
         return randomColor;
     }
-
-
 }
