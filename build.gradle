@@ -1,9 +1,12 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'java'
 }
 
+tasks.build.dependsOn('shadowJar')
+
 group = 'me.imlukas'
-version = '1.0-SNAPSHOT'
+version = '2.0'
 
 repositories {
     mavenCentral()
@@ -15,13 +18,39 @@ repositories {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
+
+    maven {
+        name = 'mojang-repo'
+        url = 'https://libraries.minecraft.net/'
+    }
+
+    maven {
+        url = 'https://jitpack.io/'
+    }
+
+    maven {
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+
+
 }
 
 dependencies {
+    compileOnly 'com.mojang:authlib:1.5.25'
     compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
+    compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
+    compileOnly 'me.clip:placeholderapi:2.11.3'
+
+    implementation fileTree(dir: "libs", include: ["*.jar"])
 
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor('org.projectlombok:lombok:1.18.24')
+}
+
+shadowJar {
+    project.configurations.implementation.canBeResolved = true
+    configurations = [project.configurations.implementation]
+    minimize()
 }
 
 def targetJavaVersion = 8

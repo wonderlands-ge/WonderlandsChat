@@ -1,0 +1,8 @@
+
+groups: # Placeholders: %player%, %player_display%, %message% (%player% is player's default name, no color // %player_display% is the player's csutom display name.)
+  default: # Group name on vault, this is case sensitive.
+    format: "&7[Default] %player% >> %message%" # This is how the message will show up on chat.
+  mvp:
+    format: "&b[MVP] %player% >> %message%"
+  vip:
+    format: "&a[VIP] %player% >> %message%"
