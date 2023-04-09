@@ -130,7 +130,5 @@ public class InventoryPacketListener implements Listener {
                 throw new RuntimeException(e);
             }
         })).thenRun(player::closeInventory);
-
-        System.out.println("test");
     }
 }
