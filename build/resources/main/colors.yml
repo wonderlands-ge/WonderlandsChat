@@ -1,0 +1,166 @@
+black:
+  type: INK_SACK
+  data: 0
+  name: "&0Black"
+  lore:
+    - "&7Click to set your color to %color%"
+  lore-no-perm:
+    - "&7You don't have permission to use this color!"
+  slot: 10
+  color: "&0"
+  selected:
+    - "&7Selected"
+red:
+  type: INK_SACK
+  data: 1
+  name: "&cRed"
+  lore:
+    - "&7Click to set your color to %color%"
+  lore-no-perm:
+    - "&7You don't have permission to use this color!"
+  slot: 11
+  color: "&c"
+  selected:
+    - "&7Selected"
+dark_green:
+  type: INK_SACK
+  data: 2
+  name: "&2Dark Green"
+  lore:
+    - "&7Click to set your color to %color%"
+  lore-no-perm:
+    - "&7You don't have permission to use this color!"
+  slot: 12
+  color: "&2"
+  selected:
+    - "&7Selected"
+gold:
+  type: INK_SACK
+  data: 14
+  name: "&6Gold"
+  lore:
+    - "&7Click to set your color to %color%"
+  lore-no-perm:
+    - "&7You don't have permission to use this color!"
+  slot: 13
+  color: "&6"
+  selected:
+    - "&7Selected"
+blue:
+  type: INK_SACK
+  data: 4
+  name: "&9Blue"
+  lore:
+    - "&7Click to set your color to %color%"
+  lore-no-perm:
+    - "&7You don't have permission to use this color!"
+  slot: 14
+  color: "&9"
+  selected:
+    - "&7Selected"
+purple:
+  type: INK_SACK
+  data: 5
+  name: "&5Purple"
+  lore:
+    - "&7Click to set your color to %color%"
+  lore-no-perm:
+    - "&7You don't have permission to use this color!"
+  slot: 15
+  color: "&5"
+  selected:
+    - "&7Selected"
+cyan:
+  type: INK_SACK
+  data: 6
+  name: "&3Cyan"
+  lore:
+    - "&7Click to set your color to %color%"
+  lore-no-perm:
+    - "&7You don't have permission to use this color!"
+  slot: 16
+  color: "&3"
+  selected:
+    - "&7Selected"
+gray:
+  type: INK_SACK
+  data: 8
+  name: "&7Gray"
+  lore:
+    - "&7Click to set your color to %color%"
+  lore-no-perm:
+    - "&7You don't have permission to use this color!"
+  slot: 19
+  color: "&7"
+  selected:
+    - "&7Selected"
+pink:
+  type: INK_SACK
+  data: 9
+  name: "&dPink"
+  lore:
+    - "&7Click to set your color to %color%"
+  lore-no-perm:
+    - "&7You don't have permission to use this color!"
+  slot: 20
+  color: "&d"
+  selected:
+    - "&7Selected"
+lime:
+  type: INK_SACK
+  data: 10
+  name: "&aLime"
+  lore:
+    - "&7Click to set your color to %color%"
+  lore-no-perm:
+    - "&7You don't have permission to use this color!"
+  slot: 21
+  color: "&a"
+  selected:
+    - "&7Selected"
+yellow:
+  type: INK_SACK
+  data: 11
+  name: "&eYellow"
+  lore:
+    - "&7Click to set your color to %color%"
+  lore-no-perm:
+    - "&7You don't have permission to use this color!"
+  slot: 22
+  color: "&e"
+  selected:
+    - "&7Selected"
+aqua:
+  type: INK_SACK
+  data: 12
+  name: "&3Aqua"
+  lore:
+    - "&7Click to set your color to %color%"
+  lore-no-perm:
+    - "&7You don't have permission to use this color!"
+  slot: 23
+  color: "&b"
+  selected:
+    - "&7Selected"
+dark_red:
+  type: REDSTONE
+  name: "&4Dark Red"
+  lore:
+    - "&7Click to set your color to %color%"
+  lore-no-perm:
+    - "&7You don't have permission to use this color!"
+  slot: 24
+  color: "&4"
+  selected:
+    - "&7Selected"
+dark_blue:
+  type: LAPIS_BLOCK
+  name: "&1Dark Blue"
+  lore:
+    - "&7Click to set your color to %color%"
+  lore-no-perm:
+    - "&7You don't have permission to use this color!"
+  slot: 25
+  color: "&1"
+  selected:
+    - "&7Selected"

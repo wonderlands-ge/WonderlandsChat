@@ -1,0 +1,5 @@
+name: WonderlandsChat
+api-version: 1.15
+version: '2.0'
+main: me.imlukas.wonderlandschat.WonderlandsChatPlugin
+depend: [ ProtocolLib, Vault, PlaceholderAPI ]

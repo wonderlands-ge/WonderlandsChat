@@ -1,0 +1,98 @@
+title: "&7Color List"
+rows: 6
+
+layout:
+  - ". . . . . . . . ."
+  - ". . . . . . . . ."
+  - ". . . . . . . ra ."
+  - ". . . . . . . . ."
+  - ". . s b n u i . ."
+  - ". . . ba c r . . ."
+
+items:
+  ra:
+    type: FIREWORK
+    name: "&c&lRandom Color"
+    lore:
+      - "&7Click to set your color to a random color"
+    lore-no-perm:
+      - "&7You don't have permission to use this!"
+    selected:
+      - "&7Selected"
+  o:
+    type: STAINED_GLASS_PANE
+    name: " "
+    data: 15
+  c:
+    type: BARRIER
+    name: "&cClose"
+  ba:
+    type: ARROW
+    name: "&cBack"
+    lore:
+      - "&7Click to go back to the main menu."
+    command: "say run command" # Don't put "/" as it's not needed, this command will be executed by the player.
+  r:
+    type: SKULL_ITEM
+    data: 3
+    skull: "%player%"
+    name: "&cReset"
+    lore:
+      - "&7Click to reset your color."
+    lore-no-perm: "&7You don't have permission to use this!"
+  s:
+    type: STAINED_CLAY
+    name: "&b&mStrikethrough format"
+    data: 12
+    lore:
+      - "&7Changes the format of the color to &b&mstrikethrough"
+    lore-no-perm:
+      - "&7You don't have permission to use this format!"
+    selected:
+      - "&7Selected"
+  b:
+    type: STAINED_CLAY
+    name: "&f&lBold format"
+    lore:
+      - "&7Changes the format of the color to &f&lbold"
+    lore-no-perm:
+      - "&7You don't have permission to use this format!"
+    selected:
+      - "&7Selected"
+  n:
+    type: WOOL
+    name: "&7No format"
+    data: 14
+    lore:
+      - "&7Removes the format of the color."
+    selected:
+      - "&7Selected"
+  u:
+    type: STAINED_CLAY
+    name: "&c&nUnderline format"
+    data: 14
+    lore:
+      - "&7Click to set your format to &c&nunderline"
+    lore-no-perm:
+      - "&7You don't have permission to use this format!"
+    selected:
+      - "&7Selected"
+  i:
+    type: STAINED_CLAY
+    name: "&f&oItalic format"
+    data: 7
+    lore:
+      - "&7Click to set your format to &f&oitalic"
+    lore-no-perm:
+      - "&7You don't have permission to use this format!"
+    selected:
+      - "&7Selected"
+
+
+
+
+
+
+
+
+

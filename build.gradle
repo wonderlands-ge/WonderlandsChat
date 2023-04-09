@@ -1,9 +1,6 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'java'
 }
-
-tasks.build.dependsOn('shadowJar')
 
 group = 'me.imlukas'
 version = '2.0'
@@ -41,17 +38,12 @@ dependencies {
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
     compileOnly 'me.clip:placeholderapi:2.11.3'
 
-    implementation fileTree(dir: "libs", include: ["*.jar"])
+    compileOnly fileTree(dir: "libs", include: ["*.jar"])
 
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor('org.projectlombok:lombok:1.18.24')
 }
 
-shadowJar {
-    project.configurations.implementation.canBeResolved = true
-    configurations = [project.configurations.implementation]
-    minimize()
-}
 
 def targetJavaVersion = 8
 java {
@@ -67,6 +59,10 @@ tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release = targetJavaVersion
     }
+}
+
+jar{
+    destinationDir = file("C:\\Users\\zeltu\\Desktop\\Local Servers\\Server-1.8.8\\plugins")
 }
 
 processResources {

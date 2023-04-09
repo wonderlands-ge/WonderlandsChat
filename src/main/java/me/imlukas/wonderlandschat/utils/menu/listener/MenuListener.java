@@ -13,6 +13,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -37,6 +38,9 @@ public class MenuListener implements Listener {
 
     @EventHandler
     private void onClick(InventoryClickEvent event) {
+        if(event.getInventory() instanceof PlayerInventory)
+            return;
+
         InventoryHolder holder = event.getInventory().getHolder();
 
         if (!(holder instanceof BaseMenu)) {

@@ -1,0 +1,9 @@
+mysql:
+  host: localhost
+  username: root
+  password: ""
+  database: test
+  port: 3306
+
+chat:
+  enabled: true

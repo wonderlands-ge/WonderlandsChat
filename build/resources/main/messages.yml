@@ -1,0 +1,22 @@
+messages:
+  prefix: "&d&lChatColor &7»"
+  use-prefix: true
+  command:
+    no-permission: "&cYou don't have permission to do that."
+    cannot-use: "&cYou cannot use this command."
+    invalid-args: "&cInvalid arguments."
+  admin:
+    reload: "&7Reloaded plugin."
+
+  specify-player: "&cPlease specify a player."
+  player-not-found: "&cPlayer not found."
+
+
+  no-permission: "&cYou don't have permission to do that."
+  color-set: "&7Selected color &f%color%&7."
+  format-set: "&7Selected format &f%format%&7."
+  random-color: "&7Random color is now %state%."
+  reset: "&7Your color has been reset."
+
+  chat:
+    toggle: "&7Chat is now %state%."
