@@ -57,7 +57,9 @@ public class ChatColorMenu {
                 viewer.closeInventory();
                 return;
             }
-
+            if (command.startsWith("dm")) {
+                viewer.closeInventory();
+            }
             viewer.performCommand(command);
         });
 
