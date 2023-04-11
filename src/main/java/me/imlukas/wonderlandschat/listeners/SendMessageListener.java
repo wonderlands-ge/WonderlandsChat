@@ -2,6 +2,7 @@ package me.imlukas.wonderlandschat.listeners;
 
 import me.imlukas.wonderlandschat.WonderlandsChatPlugin;
 import me.imlukas.wonderlandschat.data.PlayerData;
+import me.imlukas.wonderlandschat.data.color.ColorParser;
 import me.imlukas.wonderlandschat.data.groups.GroupParser;
 import me.imlukas.wonderlandschat.storage.PlayerStorage;
 import me.imlukas.wonderlandschat.utils.TextUtil;
@@ -18,18 +19,22 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static me.imlukas.wonderlandschat.WonderlandsChatPlugin.CHAT_ENABLED;
+import static me.imlukas.wonderlandschat.data.color.ColorParser.FORMATS;
 
 public class SendMessageListener implements Listener {
 
     private final PlayerStorage playerStorage;
     private final GroupParser groupParser;
+    private final ColorParser colorParser;
     private final Permission perms;
 
     public SendMessageListener(WonderlandsChatPlugin plugin) {
         this.playerStorage = plugin.getPlayerStorage();
         this.groupParser = plugin.getGroupParser();
+        this.colorParser = plugin.getColorParser();
         this.perms = plugin.getPerms();
 
     }
@@ -38,6 +43,7 @@ public class SendMessageListener implements Listener {
     public void onMessage(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         String message = event.getMessage();
+        message = message.replaceAll("&\\w|&", "");
 
         PlayerData data = playerStorage.getPlayerData(player.getUniqueId());
 
@@ -57,9 +63,10 @@ public class SendMessageListener implements Listener {
 
         if (CHAT_ENABLED) {
             setFormat(event, format, placeholderList);
-        } else {
-            event.setMessage(message);
+            return;
         }
+
+        event.setMessage(message);
     }
 
     public void setFormat(AsyncPlayerChatEvent event, String format, List<Placeholder<Player>> placeholderList) {

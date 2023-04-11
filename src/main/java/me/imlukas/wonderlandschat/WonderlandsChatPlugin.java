@@ -79,6 +79,7 @@ public final class WonderlandsChatPlugin extends JavaPlugin {
         commandManager.register(new ChatColorCommand(this));
         commandManager.register(new ReloadCommand(this));
         commandManager.register(new ChatToggleCommand(this));
+        commandManager.register(new ChatColorResetCommand(this));
 
         registerListener(new PlayerJoinListener(this));
         registerListener(new SendMessageListener(this));

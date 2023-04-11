@@ -23,17 +23,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
+import static me.imlukas.wonderlandschat.data.color.ColorParser.FORMATS;
 import static me.imlukas.wonderlandschat.utils.PlayerUtil.hasPermission;
 
 public class ChatColorMenu {
 
-    private static final Map<String, String> FORMATS = ImmutableMap.<String, String>builder()
-            .put("Strikethrough", "&m")
-            .put("Bold", "&l")
-            .put("No format", "")
-            .put("Underline", "&n")
-            .put("Italic", "&o")
-            .build();
+
 
     private final WonderlandsChatPlugin plugin;
     private final PlayerStorage playerStorage;

@@ -1,5 +1,6 @@
 package me.imlukas.wonderlandschat.data.color;
 
+import com.google.common.collect.ImmutableMap;
 import me.imlukas.wonderlandschat.utils.item.ItemBuilder;
 import me.imlukas.wonderlandschat.utils.storage.YMLBase;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -9,7 +10,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.*;
 
 public class ColorParser extends YMLBase {
-
+    public static final Map<String, String> FORMATS = ImmutableMap.<String, String>builder()
+            .put("Strikethrough", "&m")
+            .put("Bold", "&l")
+            .put("No format", "")
+            .put("Underline", "&n")
+            .put("Italic", "&o")
+            .build();
     private final Map<String, ItemStack> colors = new HashMap<>();
     private final FileConfiguration config;
 
@@ -40,6 +47,26 @@ public class ColorParser extends YMLBase {
 
     public Map<String, ItemStack> getColorsMap() {
        return colors;
+    }
+
+    public String getFormatByCode(String code) {
+        for (Map.Entry<String, String> entry : FORMATS.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+
+            if (code.equals(value)) {
+                return key;
+            }
+        }
+        return null;
+    }
+    public String getColorNameByCode(String code) {
+        for (String key : config.getKeys(false)) {
+            if (config.getString(key + ".color").equals(code)) {
+                return key;
+            }
+        }
+        return null;
     }
 
     public String getDisplayName(String color) {
