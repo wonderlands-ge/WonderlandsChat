@@ -40,7 +40,7 @@ public final class WonderlandsChatPlugin extends JavaPlugin {
     private PlayerStorage playerStorage;
     private SQLDatabase sqlDatabase;
 
-    private InventoryPacketListener inventoryPacketListener;
+    private InventoryCloseListener inventoryCloseListener;
 
     public static boolean CHAT_ENABLED;
 
@@ -80,11 +80,11 @@ public final class WonderlandsChatPlugin extends JavaPlugin {
         commandManager.register(new ReloadCommand(this));
         commandManager.register(new ChatToggleCommand(this));
         commandManager.register(new ChatColorResetCommand(this));
+        commandManager.register(new CloseInventory());
 
         registerListener(new PlayerJoinListener(this));
         registerListener(new SendMessageListener(this));
-        inventoryPacketListener = new InventoryPacketListener(this);
-        inventoryPacketListener.listen();
+        registerListener(new InventoryCloseListener(this));
 
         initSQLTables();
     }
@@ -103,7 +103,7 @@ public final class WonderlandsChatPlugin extends JavaPlugin {
         commandManager = null;
         menuRegistry = null;
         playerStorage = null;
-        inventoryPacketListener = null;
+        inventoryCloseListener = null;
 
         HandlerList.unregisterAll(this);
     }
