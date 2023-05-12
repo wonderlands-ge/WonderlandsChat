@@ -66,6 +66,6 @@ public class InventoryCloseListener implements Listener {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-        })).thenRun(player::closeInventory);
+        }));
     }
 }

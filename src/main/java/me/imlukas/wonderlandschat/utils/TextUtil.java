@@ -15,8 +15,7 @@ import java.util.regex.Pattern;
 public class TextUtil {
 
     private final FileConfiguration config;
-    private static Pattern pattern;
-    private static final List<String> COLORS = Arrays.asList("&0", "&1", "&2", "&3", "&4", "&5", "&6", "&7", "&9", "&a", "&b", "&c", "&d", "&e", "&f");
+    private static final List<String> COLORS = Arrays.asList("&3", "&e", "&a", "&d", "&7", "&6", "&5", "&9", "&c");
 
 
     public TextUtil(WonderlandsChatPlugin main) {

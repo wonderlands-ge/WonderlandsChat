@@ -25,11 +25,6 @@ public class ChatColorCommand implements SimpleCommand {
     }
 
     @Override
-    public String getPermission() {
-        return "wonderlandschat.menu";
-    }
-
-    @Override
     public void execute(CommandSender sender, String... args) {
 
         if (!(sender instanceof Player)) {

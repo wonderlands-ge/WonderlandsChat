@@ -41,16 +41,11 @@ public class ItemBuilder {
                     "getConfigurationSection");
             configurableValues.put("flags", ItemBuilder.class.getMethod("flags", List.class),
                     "getStringList");
-            configurableValues.put("unbreakable",
-                    ItemBuilder.class.getMethod("unbreakable", boolean.class), "getBoolean");
             configurableValues.put("skull-hash",
                     ItemBuilder.class.getMethod("skullHash", String.class),
                     "getString");
             configurableValues.put("skull", ItemBuilder.class.getMethod("skull", String.class),
                     "getString");
-            configurableValues.put("model-data",
-                    ItemBuilder.class.getMethod("modelData", int.class),
-                    "getInt");
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -64,10 +59,6 @@ public class ItemBuilder {
     private List<ItemFlag> itemFlags = new ArrayList<>();
     private short data = -1;
     private boolean glowing;
-    private boolean unbreakable;
-    private boolean protected_;
-
-    private int modelData = -1;
 
     private String skullName = null;
     private String skullHash = null;
@@ -122,10 +113,6 @@ public class ItemBuilder {
 
         builder.itemFlags.addAll(meta.getItemFlags());
 
-        if (meta.spigot().isUnbreakable()) {
-            builder.unbreakable(true);
-        }
-
         if (meta instanceof SkullMeta) {
             SkullMeta skullMeta = (SkullMeta) meta;
 
@@ -156,11 +143,6 @@ public class ItemBuilder {
         return null;
     }
 
-    public ItemBuilder modelData(int modelData) {
-        this.modelData = modelData;
-        return this;
-    }
-
     public ItemBuilder glowing(boolean glowing) {
         this.glowing = glowing;
         itemFlags.add(ItemFlag.HIDE_ENCHANTS);
@@ -176,12 +158,6 @@ public class ItemBuilder {
         this.data = (short) num;
         return this;
     }
-
-    public ItemBuilder unbreakable(boolean unbreakable) {
-        this.unbreakable = unbreakable;
-        return this;
-    }
-
     public ItemBuilder lore(List<String> lore) {
         for (String s : lore) {
             this.lore.add(TextUtil.color(s));
@@ -289,8 +265,6 @@ public class ItemBuilder {
             meta.addEnchant(Enchantment.LUCK, 123, true);
         }
 
-        meta.spigot().setUnbreakable(unbreakable);
-
         if (!enchantments.isEmpty()) {
             for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
                 meta.addEnchant(entry.getKey(), entry.getValue(), true);
@@ -316,10 +290,5 @@ public class ItemBuilder {
 
         item.setItemMeta(meta);
         return item;
-    }
-
-    public ItemBuilder protect(boolean protect) {
-        this.protected_ = protect;
-        return this;
     }
 }

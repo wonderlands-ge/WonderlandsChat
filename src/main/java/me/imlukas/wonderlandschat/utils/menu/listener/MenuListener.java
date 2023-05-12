@@ -1,16 +1,21 @@
 package me.imlukas.wonderlandschat.utils.menu.listener;
 
+import com.comphenix.net.bytebuddy.build.Plugin;
 import me.imlukas.wonderlandschat.WonderlandsChatPlugin;
 import me.imlukas.wonderlandschat.utils.collection.TypedMap;
 import me.imlukas.wonderlandschat.utils.menu.base.BaseMenu;
 import me.imlukas.wonderlandschat.utils.menu.registry.MenuRegistry;
 import me.imlukas.wonderlandschat.utils.menu.registry.meta.HiddenMenuData;
 import me.imlukas.wonderlandschat.utils.menu.registry.meta.HiddenMenuTracker;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.PlayerInventory;
@@ -35,8 +40,7 @@ public class MenuListener implements Listener {
         WonderlandsChatPlugin plugin = registry.getPlugin();
         plugin.getServer().getPluginManager().registerEvents(new MenuListener(registry), plugin);
     }
-
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     private void onClick(InventoryClickEvent event) {
         if(event.getInventory() instanceof PlayerInventory)
             return;
@@ -47,23 +51,16 @@ public class MenuListener implements Listener {
             return;
         }
 
-        BaseMenu baseMenu = (BaseMenu) holder;
+        int slot = event.getSlot();
 
-        baseMenu.handleClick(event);
-        event.setCancelled(true);
-    }
-
-    @EventHandler
-    private void onClose(InventoryCloseEvent event) {
-        InventoryHolder holder = event.getInventory().getHolder();
-
-        if (!(holder instanceof BaseMenu)) {
-            return;
+        if (slot > 0 && slot < 9 || event.getClick() == ClickType.NUMBER_KEY) {
+            Bukkit.getServer().getConsoleSender().sendMessage("closeinventory " + event.getWhoClicked().getName());
         }
 
         BaseMenu baseMenu = (BaseMenu) holder;
 
-        baseMenu.handleClose();
+        baseMenu.handleClick(event);
+        event.setCancelled(true);
     }
 
     @EventHandler

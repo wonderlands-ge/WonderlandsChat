@@ -23,6 +23,7 @@ import java.util.Map;
 
 import static me.imlukas.wonderlandschat.WonderlandsChatPlugin.CHAT_ENABLED;
 import static me.imlukas.wonderlandschat.data.color.ColorParser.FORMATS;
+import static me.imlukas.wonderlandschat.utils.PlayerUtil.hasPermission;
 
 public class SendMessageListener implements Listener {
 
@@ -53,7 +54,12 @@ public class SendMessageListener implements Listener {
 
         String group = perms.getPrimaryGroup(player);
         String format = TextUtil.colorAndReplace(player, groupParser.getFormat(group));
-        message = TextUtil.colorAndReplace(player, data.getFormatted() + message);
+
+        if (player.isOp() || hasPermission(player, "placeholders")) {
+            message = TextUtil.colorAndReplace(player, data.getFormatted() + message);
+        } else {
+            message = TextUtil.color(data.getFormatted() + message);
+        }
 
         LinkedList<Placeholder<Player>> placeholderList = new LinkedList<>();
         placeholderList.add(new Placeholder<>("player", player.getName()));
