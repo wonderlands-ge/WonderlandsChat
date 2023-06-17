@@ -41,7 +41,7 @@ public class TextUtil {
         for (String word : words) {
             builder.append(capitalize(word)).append(" ");
         }
-        return builder.toString().trim();
+        return builder.toString();
     }
 
     public static String capitalizeAllAndColor(String text) {

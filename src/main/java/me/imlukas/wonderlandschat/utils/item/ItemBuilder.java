@@ -272,9 +272,9 @@ public class ItemBuilder {
         }
 
         if (skullHash != null) {
-            GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
+            GameProfile gameProfile = new GameProfile(new UUID(skullHash.hashCode(), skullHash.hashCode()), null);
             PropertyMap propertyMap = gameProfile.getProperties();
-            propertyMap.put("textures", new Property("textures", skullHash));
+            propertyMap.put("textures", new Property("Value", skullHash));
 
             SkullMeta skullMeta = (SkullMeta) meta;
 
@@ -282,7 +282,6 @@ public class ItemBuilder {
                 Field profileField = skullMeta.getClass().getDeclaredField("profile");
                 profileField.setAccessible(true);
                 profileField.set(skullMeta, gameProfile);
-                profileField.setAccessible(false);
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 e.printStackTrace();
             }

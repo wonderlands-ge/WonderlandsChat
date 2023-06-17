@@ -108,58 +108,16 @@ public final class ItemUtil {
 
             SkullMeta skullMeta = (SkullMeta) meta;
 
-            boolean replaceProfile = true;
-            if (skullMeta.hasOwner()) {
-                String owner = skullMeta.getOwner();
+            String owner = skullMeta.getOwner();
 
-                for (Placeholder<T> placeholder1 : placeholder) {
-                    String oldOwner = owner;
-                    owner = placeholder1.replace(owner, replacementObject);
+            for (Placeholder<T> placeholder1 : placeholder) {
+                String oldOwner = owner;
+                owner = placeholder1.replace(owner, replacementObject);
 
-                    if (owner != null && !owner.equals(oldOwner)) {
-                        skullMeta.setOwner(owner);
-                        replaceProfile = false;
-                    }
-                }
-
-            }
-
-            if (replaceProfile) {
-                try {
-
-                    Field profileField = skullMeta.getClass().getDeclaredField("profile");
-                    profileField.setAccessible(true);
-                    GameProfile profile = (GameProfile) profileField.get(skullMeta);
-                    profileField.setAccessible(false);
-
-                    if (profile != null) {
-                        PropertyMap propertyMap = profile.getProperties();
-                        Collection<Property> properties = new HashSet<>(
-                                propertyMap.get("textures")
-                        );
-
-                        propertyMap.removeAll("properties");
-
-                        for (Property property : properties) {
-                            String value = property.getValue();
-                            String signature = property.getSignature();
-
-                            for (Placeholder<T> placeholder1 : placeholder) {
-                                value = placeholder1.replace(value, replacementObject);
-                                signature = placeholder1.replace(signature, replacementObject);
-                            }
-
-                            propertyMap.put("textures", new Property("textures", value, null));
-                            break;
-                        }
-
-                    }
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    e.printStackTrace();
+                if (owner != null && !owner.equals(oldOwner)) {
+                    skullMeta.setOwner(owner);
                 }
             }
-
-
         }
         item.setItemMeta(meta);
     }
