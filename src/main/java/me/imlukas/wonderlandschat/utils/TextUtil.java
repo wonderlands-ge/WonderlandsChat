@@ -1,5 +1,18 @@
+/*
+ * Decompiled with CFR 0.150.
+ * 
+ * Could not load the following classes:
+ *  me.clip.placeholderapi.PlaceholderAPI
+ *  org.bukkit.ChatColor
+ *  org.bukkit.configuration.file.FileConfiguration
+ *  org.bukkit.entity.Player
+ */
 package me.imlukas.wonderlandschat.utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.imlukas.wonderlandschat.WonderlandsChatPlugin;
 import me.imlukas.wonderlandschat.utils.collection.ListUtils;
@@ -7,16 +20,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Pattern;
-
 public class TextUtil {
-
     private final FileConfiguration config;
-    private static final List<String> COLORS = Arrays.asList("&3", "&e", "&a", "&d", "&7", "&6", "&5", "&9", "&c");
-
+    private static Pattern pattern;
+    private static final List<String> COLORS;
 
     public TextUtil(WonderlandsChatPlugin main) {
         this.config = main.getConfig();
@@ -39,47 +46,49 @@ public class TextUtil {
         String[] words = text.split(" ");
         StringBuilder builder = new StringBuilder();
         for (String word : words) {
-            builder.append(capitalize(word)).append(" ");
+            builder.append(TextUtil.capitalize(word)).append(" ");
         }
-        return builder.toString();
+        return builder.toString().trim();
     }
 
     public static String capitalizeAllAndColor(String text) {
-        return color(capitalizeAll(text));
+        return TextUtil.color(TextUtil.capitalizeAll(text));
     }
 
     public static String color(String text) {
-        return ChatColor.translateAlternateColorCodes('&', text);
+        return ChatColor.translateAlternateColorCodes((char)'&', (String)text);
     }
 
     public static String colorAndReplace(Player player, String text) {
-        return ChatColor.translateAlternateColorCodes('&', replacePlaceholders(player, text));
+        return ChatColor.translateAlternateColorCodes((char)'&', (String)TextUtil.replacePlaceholders(player, text));
     }
 
     public static String replacePlaceholders(Player player, String text) {
-        String papiParsed = PlaceholderAPI.setPlaceholders(player, text);
-
+        String papiParsed = PlaceholderAPI.setPlaceholders((Player)player, (String)text);
         if (papiParsed.isEmpty()) {
             return text;
         }
-
         return papiParsed;
     }
 
     public static List<String> color(List<String> list) {
-        List<String> colored = new ArrayList<>();
+        ArrayList<String> colored = new ArrayList<String>();
         for (String s : list) {
-            colored.add(color(s));
+            colored.add(TextUtil.color(s));
         }
         return colored;
     }
 
-
     public static String colorAndCapitalize(String text) {
-        return color(capitalize(text));
+        return TextUtil.color(TextUtil.capitalize(text));
     }
 
     public String getColorConfig(String key) {
-        return color(config.getString(key));
+        return TextUtil.color(this.config.getString(key));
+    }
+
+    static {
+        COLORS = Arrays.asList("&0", "&1", "&2", "&3", "&4", "&5", "&6", "&7", "&9", "&a", "&b", "&c", "&d", "&e", "&f");
     }
 }
+

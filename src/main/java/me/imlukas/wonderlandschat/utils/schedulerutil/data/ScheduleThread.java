@@ -1,11 +1,14 @@
+/*
+ * Decompiled with CFR 0.150.
+ */
 package me.imlukas.wonderlandschat.utils.schedulerutil.data;
 
-import lombok.Getter;
 import me.imlukas.wonderlandschat.utils.schedulerutil.ScheduledTask;
+import me.imlukas.wonderlandschat.utils.schedulerutil.data.ScheduleBuilderBase;
+import me.imlukas.wonderlandschat.utils.schedulerutil.data.ScheduleData;
 
-public class ScheduleThread implements ScheduleBuilderBase {
-
-    @Getter
+public class ScheduleThread
+implements ScheduleBuilderBase {
     private final ScheduleData data;
 
     public ScheduleThread(ScheduleData data) {
@@ -13,14 +16,18 @@ public class ScheduleThread implements ScheduleBuilderBase {
     }
 
     public ScheduledTask sync() {
-        data.setSync(true);
-        return new ScheduledTask(data.getPlugin(), data);
+        this.data.setSync(true);
+        return new ScheduledTask(this.data.getPlugin(), this.data);
     }
 
     public ScheduledTask async() {
-        data.setSync(false);
-        return new ScheduledTask(data.getPlugin(), data);
+        this.data.setSync(false);
+        return new ScheduledTask(this.data.getPlugin(), this.data);
     }
 
-
+    @Override
+    public ScheduleData getData() {
+        return this.data;
+    }
 }
+

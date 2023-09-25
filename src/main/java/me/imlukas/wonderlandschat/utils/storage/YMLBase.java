@@ -1,21 +1,25 @@
+/*
+ * Decompiled with CFR 0.150.
+ * 
+ * Could not load the following classes:
+ *  org.bukkit.configuration.InvalidConfigurationException
+ *  org.bukkit.configuration.file.FileConfiguration
+ *  org.bukkit.configuration.file.YamlConfiguration
+ *  org.bukkit.plugin.java.JavaPlugin
+ */
 package me.imlukas.wonderlandschat.utils.storage;
 
-import lombok.Getter;
+import java.io.File;
+import java.io.IOException;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
-
 public class YMLBase {
-
-    @Getter
     protected File file;
     private final boolean existsOnSource;
     private final JavaPlugin plugin;
-    @Getter
     private final FileConfiguration configuration;
 
     public YMLBase(JavaPlugin plugin, String name) {
@@ -26,40 +30,48 @@ public class YMLBase {
         this.plugin = plugin;
         this.file = file;
         this.existsOnSource = existsOnSource;
-
-        this.configuration = loadConfiguration();
+        this.configuration = this.loadConfiguration();
     }
 
     public void save() {
         try {
-            configuration.save(file);
-        } catch (IOException e) {
+            this.configuration.save(this.file);
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private FileConfiguration loadConfiguration() {
-        FileConfiguration cfg = new YamlConfiguration();
-
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            if (existsOnSource)
-                plugin.saveResource(file.getAbsolutePath().replace(plugin.getDataFolder().getAbsolutePath() + File.separator, ""), false);
-            else {
+        YamlConfiguration cfg = new YamlConfiguration();
+        if (!this.file.exists()) {
+            this.file.getParentFile().mkdirs();
+            if (this.existsOnSource) {
+                this.plugin.saveResource(this.file.getAbsolutePath().replace(this.plugin.getDataFolder().getAbsolutePath() + File.separator, ""), false);
+            } else {
                 try {
-                    file.createNewFile();
-                } catch (IOException e) {
+                    this.file.createNewFile();
+                }
+                catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-
         try {
-            cfg.load(file);
-        } catch (IOException | InvalidConfigurationException e) {
+            cfg.load(this.file);
+        }
+        catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
-
         return cfg;
     }
+
+    public File getFile() {
+        return this.file;
+    }
+
+    public FileConfiguration getConfiguration() {
+        return this.configuration;
+    }
 }
+

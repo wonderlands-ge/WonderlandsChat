@@ -1,14 +1,15 @@
+/*
+ * Decompiled with CFR 0.150.
+ */
 package me.imlukas.wonderlandschat.utils.menu.selection;
-
-import lombok.Getter;
-import me.imlukas.wonderlandschat.utils.menu.math.Point;
 
 import java.util.ArrayList;
 import java.util.List;
+import me.imlukas.wonderlandschat.utils.menu.math.Point;
+import me.imlukas.wonderlandschat.utils.menu.selection.Selection;
 
-@Getter
-public class RectangularSelection implements Selection {
-
+public class RectangularSelection
+implements Selection {
     private final Point firstPoint;
     private final Point secondPoint;
 
@@ -19,14 +20,12 @@ public class RectangularSelection implements Selection {
 
     @Override
     public List<Integer> getSlots() {
-        List<Integer> slots = new ArrayList<>();
-
-        for (int x = firstPoint.getX(); x <= secondPoint.getX(); x++) {
-            for (int y = firstPoint.getY(); y <= secondPoint.getY(); y++) {
-                slots.add(getSlot(x, y));
+        ArrayList<Integer> slots = new ArrayList<Integer>();
+        for (int x = this.firstPoint.getX(); x <= this.secondPoint.getX(); ++x) {
+            for (int y = this.firstPoint.getY(); y <= this.secondPoint.getY(); ++y) {
+                slots.add(this.getSlot(x, y));
             }
         }
-
         return slots;
     }
 
@@ -34,5 +33,12 @@ public class RectangularSelection implements Selection {
         return y * 9 + x;
     }
 
+    public Point getFirstPoint() {
+        return this.firstPoint;
+    }
 
+    public Point getSecondPoint() {
+        return this.secondPoint;
+    }
 }
+

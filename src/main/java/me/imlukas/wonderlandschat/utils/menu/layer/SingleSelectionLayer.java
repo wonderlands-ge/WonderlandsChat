@@ -1,25 +1,22 @@
+/*
+ * Decompiled with CFR 0.150.
+ */
 package me.imlukas.wonderlandschat.utils.menu.layer;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiConsumer;
 import me.imlukas.wonderlandschat.utils.menu.base.BaseMenu;
 import me.imlukas.wonderlandschat.utils.menu.button.Button;
 import me.imlukas.wonderlandschat.utils.menu.element.Renderable;
 import me.imlukas.wonderlandschat.utils.menu.selection.Selection;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiConsumer;
-
-public class SingleSelectionLayer<T> extends Renderable {
-
+public class SingleSelectionLayer<T>
+extends Renderable {
     private final boolean allowDeselect;
-
     private int selectedIndex;
-    private final List<Option<T>> options = new ArrayList<>();
-
+    private final List<Option<T>> options = new ArrayList<Option<T>>();
     private Selection selection;
-
     private BiConsumer<T, T> onSelectionChange;
 
     public SingleSelectionLayer(BaseMenu menu, boolean allowDeselect) {
@@ -29,33 +26,32 @@ public class SingleSelectionLayer<T> extends Renderable {
 
     @Override
     public void forceUpdate() {
-        List<Integer> slots = selection.getSlots();
-
-        for (int index = 0; index < Math.min(options.size(), slots.size()); index++) {
-            Option<T> option = options.get(index);
+        List<Integer> slots = this.selection.getSlots();
+        for (int index = 0; index < Math.min(this.options.size(), slots.size()); ++index) {
+            boolean selected;
+            Option<T> option = this.options.get(index);
             int slot = slots.get(index);
-
-            boolean selected = selectedIndex == index;
-
-            if (selected)
-                menu.setElement(slot, option.getSelectedButton());
-            else
-                menu.setElement(slot, option.getDefaultButton());
+            boolean bl = selected = this.selectedIndex == index;
+            if (selected) {
+                this.menu.setElement(slot, option.getSelectedButton());
+                continue;
+            }
+            this.menu.setElement(slot, option.getDefaultButton());
         }
     }
 
     public void addOption(Option<T> option) {
-        options.add(option);
+        this.options.add(option);
     }
 
     public void addDefaultOption(Option<T> option) {
-        option.defaultButton.setLeftClickAction(() -> select(option));
-        option.defaultButton.setLeftClickAction(() -> {
-            if (allowDeselect)
-                deselect();
+        ((Option)option).defaultButton.setLeftClickAction(() -> this.select(option));
+        ((Option)option).defaultButton.setLeftClickAction(() -> {
+            if (this.allowDeselect) {
+                this.deselect();
+            }
         });
-
-        addOption(option);
+        this.addOption(option);
     }
 
     public void setSelection(Selection selection) {
@@ -78,57 +74,69 @@ public class SingleSelectionLayer<T> extends Renderable {
     }
 
     public void select(T value) {
-        for (int index = 0; index < options.size(); index++) {
-            Option<T> option = options.get(index);
-
-            if (option.getValue().equals(value)) {
-                select(index);
-                return;
-            }
+        for (int index = 0; index < this.options.size(); ++index) {
+            Option<T> option = this.options.get(index);
+            if (!option.getValue().equals(value)) continue;
+            this.select(index);
+            return;
         }
     }
 
     public void select(Option<T> option) {
-        select(options.indexOf(option));
+        this.select(this.options.indexOf(option));
     }
 
     public void deselect() {
-        T oldSelection = selectedIndex == -1 ? null : options.get(selectedIndex).value;
-
-        onSelectionChange.accept(oldSelection, null);
-        selectedIndex = -1;
-        forceUpdate();
+        T oldSelection = this.selectedIndex == -1 ? null : (this.options.get(this.selectedIndex)).value;
+        this.onSelectionChange.accept(oldSelection, null);
+        this.selectedIndex = -1;
+        this.forceUpdate();
     }
 
     public T getSelectedValue() {
-        if (selectedIndex < 0 || selectedIndex >= options.size())
+        if (this.selectedIndex < 0 || this.selectedIndex >= this.options.size()) {
             return null;
-
-        return options.get(selectedIndex).getValue();
+        }
+        return this.options.get(this.selectedIndex).getValue();
     }
 
     public Option<T> getSelectedOption() {
-        if (selectedIndex < 0 || selectedIndex >= options.size())
+        if (this.selectedIndex < 0 || this.selectedIndex >= this.options.size()) {
             return null;
-
-        return options.get(selectedIndex);
+        }
+        return this.options.get(this.selectedIndex);
     }
 
     public void onSelectionChange(BiConsumer<T, T> onSelectionChange) {
         this.onSelectionChange = onSelectionChange.andThen(onSelectionChange);
     }
 
-
-    @Getter
-    @AllArgsConstructor
     public static class Option<T> {
         private final T value;
         private final Button defaultButton;
         private final Button selectedButton;
 
         public static <T> Option<T> of(T value, Button defaultButton, Button selectedButton) {
-            return new Option<>(value, defaultButton, selectedButton);
+            return new Option<T>(value, defaultButton, selectedButton);
+        }
+
+        public T getValue() {
+            return this.value;
+        }
+
+        public Button getDefaultButton() {
+            return this.defaultButton;
+        }
+
+        public Button getSelectedButton() {
+            return this.selectedButton;
+        }
+
+        public Option(T value, Button defaultButton, Button selectedButton) {
+            this.value = value;
+            this.defaultButton = defaultButton;
+            this.selectedButton = selectedButton;
         }
     }
-
 }
+

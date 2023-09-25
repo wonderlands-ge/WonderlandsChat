@@ -1,3 +1,10 @@
+/*
+ * Decompiled with CFR 0.150.
+ * 
+ * Could not load the following classes:
+ *  org.bukkit.command.CommandSender
+ *  org.bukkit.entity.Player
+ */
 package me.imlukas.wonderlandschat.command;
 
 import me.imlukas.wonderlandschat.WonderlandsChatPlugin;
@@ -5,9 +12,8 @@ import me.imlukas.wonderlandschat.utils.command.SimpleCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import static me.imlukas.wonderlandschat.WonderlandsChatPlugin.CHAT_ENABLED;
-
-public class ChatToggleCommand implements SimpleCommand {
+public class ChatToggleCommand
+implements SimpleCommand {
     private final WonderlandsChatPlugin plugin;
 
     public ChatToggleCommand(WonderlandsChatPlugin plugin) {
@@ -25,15 +31,14 @@ public class ChatToggleCommand implements SimpleCommand {
     }
 
     @Override
-    public void execute(CommandSender sender, String... args) {
-        Player player = (Player) sender;
-        CHAT_ENABLED = !CHAT_ENABLED;
-        plugin.getConfig().set("chat.enabled", CHAT_ENABLED);
-        plugin.saveConfig();
-
-        System.out.println(CHAT_ENABLED);
-
-        String state = CHAT_ENABLED ? "enabled" : "disabled";
-        plugin.getMessages().sendMessage(player, "chat.toggle", (message) -> message.replace("%state%", state));
+    public void execute(CommandSender sender, String ... args) {
+        Player player = (Player)sender;
+        WonderlandsChatPlugin.CHAT_ENABLED = !WonderlandsChatPlugin.CHAT_ENABLED;
+        this.plugin.getConfig().set("chat.enabled", (Object)WonderlandsChatPlugin.CHAT_ENABLED);
+        this.plugin.saveConfig();
+        System.out.println(WonderlandsChatPlugin.CHAT_ENABLED);
+        String state = WonderlandsChatPlugin.CHAT_ENABLED ? "enabled" : "disabled";
+        this.plugin.getMessages().sendMessage((CommandSender)player, "chat.toggle", message -> message.replace("%state%", state));
     }
 }
+

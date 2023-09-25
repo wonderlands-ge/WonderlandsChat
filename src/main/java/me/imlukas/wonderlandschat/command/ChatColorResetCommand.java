@@ -1,3 +1,11 @@
+/*
+ * Decompiled with CFR 0.150.
+ * 
+ * Could not load the following classes:
+ *  org.bukkit.Bukkit
+ *  org.bukkit.command.CommandSender
+ *  org.bukkit.entity.Player
+ */
 package me.imlukas.wonderlandschat.command;
 
 import me.imlukas.wonderlandschat.WonderlandsChatPlugin;
@@ -8,8 +16,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ChatColorResetCommand implements SimpleCommand {
-
+public class ChatColorResetCommand
+implements SimpleCommand {
     private final WonderlandsChatPlugin plugin;
     private final MessagesFile messages;
 
@@ -29,21 +37,17 @@ public class ChatColorResetCommand implements SimpleCommand {
     }
 
     @Override
-    public void execute(CommandSender sender, String... args) {
+    public void execute(CommandSender sender, String ... args) {
+        Player player;
         if (args[0].isEmpty()) {
-            messages.sendMessage(sender, "specify-player");
+            this.messages.sendMessage(sender, "specify-player");
         }
-
-        Player player = Bukkit.getPlayer(args[0]);
-
-        if (player == null) {
-            messages.sendMessage(sender, "player-not-found", (message) -> message.replace("%player%", args[0]));
+        if ((player = Bukkit.getPlayer((String)args[0])) == null) {
+            this.messages.sendMessage(sender, "player-not-found", message -> message.replace("%player%", args[0]));
         }
-
-        PlayerData data = plugin.getPlayerStorage().getPlayerData(player.getUniqueId());
-
+        PlayerData data = this.plugin.getPlayerStorage().getPlayerData(player.getUniqueId());
         data.reset();
-
-        plugin.getMessages().sendMessage(player, "reset-player", (message) -> message.replace("%player%", player.getName()));
+        this.plugin.getMessages().sendMessage((CommandSender)player, "reset-player", message -> message.replace("%player%", player.getName()));
     }
 }
+

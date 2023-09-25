@@ -1,15 +1,18 @@
+/*
+ * Decompiled with CFR 0.150.
+ */
 package me.imlukas.wonderlandschat.utils.menu.layer;
-
-import me.imlukas.wonderlandschat.utils.menu.base.BaseMenu;
-import me.imlukas.wonderlandschat.utils.menu.element.Renderable;
-import me.imlukas.wonderlandschat.utils.menu.pagination.PaginableArea;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import me.imlukas.wonderlandschat.utils.menu.base.BaseMenu;
+import me.imlukas.wonderlandschat.utils.menu.element.Renderable;
+import me.imlukas.wonderlandschat.utils.menu.pagination.PaginableArea;
 
-public class PaginableLayer extends Renderable {
-    private final List<PaginableArea> areas = new ArrayList<>();
+public class PaginableLayer
+extends Renderable {
+    private final List<PaginableArea> areas = new ArrayList<PaginableArea>();
     private int page = 1;
 
     public PaginableLayer(BaseMenu menu) {
@@ -18,43 +21,43 @@ public class PaginableLayer extends Renderable {
 
     @Override
     public void forceUpdate() {
-        for (PaginableArea area : areas) {
-            area.forceUpdate(menu, page);
+        for (PaginableArea area : this.areas) {
+            area.forceUpdate(this.menu, this.page);
         }
     }
 
-    public void addArea(PaginableArea... area) {
-        areas.addAll(Arrays.asList(area));
+    public void addArea(PaginableArea ... area) {
+        this.areas.addAll(Arrays.asList(area));
     }
 
     public int getPage() {
-        return page;
+        return this.page;
     }
 
     public void nextPage() {
-        if (page >= getMaxPage()) {
+        if (this.page >= this.getMaxPage()) {
             return;
         }
-
-        page++;
-        menu.forceUpdate();
+        ++this.page;
+        this.menu.forceUpdate();
     }
 
     public void previousPage() {
-        if (page == 1) {
+        if (this.page == 1) {
             return;
         }
-        page--;
-        menu.forceUpdate();
+        --this.page;
+        this.menu.forceUpdate();
     }
 
     public int getMaxPage() {
         int max = 0;
-        for (PaginableArea area : areas) {
+        for (PaginableArea area : this.areas) {
             int areaMax = area.getPageCount();
-            if (areaMax > max)
-                max = areaMax;
+            if (areaMax <= max) continue;
+            max = areaMax;
         }
         return max;
     }
 }
+

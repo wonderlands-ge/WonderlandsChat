@@ -1,9 +1,12 @@
+/*
+ * Decompiled with CFR 0.150.
+ */
 package me.imlukas.wonderlandschat.utils.schedulerutil.data;
 
 import java.util.function.Consumer;
+import me.imlukas.wonderlandschat.utils.schedulerutil.data.ScheduleBuilderBase;
 
 public class ScheduleTimestamp<T extends ScheduleBuilderBase> {
-
     private final T builder;
     private final long time;
     private final Consumer<Long> execute;
@@ -15,23 +18,23 @@ public class ScheduleTimestamp<T extends ScheduleBuilderBase> {
     }
 
     public T ticks() {
-        execute.accept(time);
-        return builder;
+        this.execute.accept(this.time);
+        return this.builder;
     }
 
     public T seconds() {
-        execute.accept(time * 20);
-        return builder;
+        this.execute.accept(this.time * 20L);
+        return this.builder;
     }
 
     public T minutes() {
-        execute.accept(time * 60 * 20);
-        return builder;
+        this.execute.accept(this.time * 60L * 20L);
+        return this.builder;
     }
 
     public T hours() {
-        execute.accept(time * 60 * 60 * 20);
-        return builder;
+        this.execute.accept(this.time * 60L * 60L * 20L);
+        return this.builder;
     }
-
 }
+

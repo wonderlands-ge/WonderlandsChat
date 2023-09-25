@@ -1,11 +1,15 @@
+/*
+ * Decompiled with CFR 0.150.
+ */
 package me.imlukas.wonderlandschat.utils.menu.selection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import me.imlukas.wonderlandschat.utils.menu.selection.Selection;
 
-public class SlotSelection implements Selection {
-
+public class SlotSelection
+implements Selection {
     private final List<Integer> slots;
 
     public SlotSelection(int slot) {
@@ -16,9 +20,8 @@ public class SlotSelection implements Selection {
         this.slots = slots;
     }
 
-    public SlotSelection(int... slots) {
-        this.slots = new ArrayList<>();
-
+    public SlotSelection(int ... slots) {
+        this.slots = new ArrayList<Integer>();
         for (int slot : slots) {
             this.slots.add(slot);
         }
@@ -32,13 +35,13 @@ public class SlotSelection implements Selection {
         return new SlotSelection(slots);
     }
 
-    public static SlotSelection of(int... slots) {
+    public static SlotSelection of(int ... slots) {
         return new SlotSelection(slots);
     }
 
-
     @Override
     public List<Integer> getSlots() {
-        return slots;
+        return this.slots;
     }
 }
+

@@ -1,76 +1,64 @@
+/*
+ * Decompiled with CFR 0.150.
+ */
 package me.imlukas.wonderlandschat.utils.command.comparison;
 
-
-import me.imlukas.wonderlandschat.utils.command.SimpleCommand;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
+import me.imlukas.wonderlandschat.utils.command.SimpleCommand;
+import me.imlukas.wonderlandschat.utils.command.comparison.SmallestStringComparator;
 
 public class ComparisonResult {
-
     private final Map<String, SimpleCommand> commands;
     private final LinkedList<Integer> wildCards;
 
     public ComparisonResult(Map<String, SimpleCommand> commands) {
         this.commands = commands;
-        this.wildCards = new LinkedList<>();
+        this.wildCards = new LinkedList();
     }
 
-    //get the command that match the input
     String[] match(String input) {
-        SortedSet<String> result = new TreeSet<>(new SmallestStringComparator());
+        boolean isNextCommand;
+        TreeSet<String> result = new TreeSet<String>(new SmallestStringComparator());
         String[] inputs = input.split("\\.");
-        boolean isNextCommand = input.charAt(input.length() - 1) == '.';
-
-        //in case input is empty
+        boolean bl = isNextCommand = input.charAt(input.length() - 1) == '.';
         if (inputs.length == 0) {
             return new String[0];
         }
-
-        //case alias.arg
-        //first take out the alias
-        for (SimpleCommand command : commands.values()) {
-            if (findAliasingCommand(inputs[0], command)) {
-                if (searchArgs(inputs, command, isNextCommand)) {
-                    result.add(command.getIdentifier());
-                    continue;
-                }
+        for (SimpleCommand command : this.commands.values()) {
+            if (this.findAliasingCommand(inputs[0], command) && this.searchArgs(inputs, command, isNextCommand)) {
+                result.add(command.getIdentifier());
+                continue;
             }
-
-            //look for identifiers
-            if (searchIds(inputs, command)) {
-                if (searchArgs(inputs, command, isNextCommand)) {
-                    result.add(command.getIdentifier());
-                }
-            }
+            if (!this.searchIds(inputs, command) || !this.searchArgs(inputs, command, isNextCommand)) continue;
+            result.add(command.getIdentifier());
         }
         return result.toArray(new String[0]);
     }
 
     private boolean searchArgs(String[] inputs, SimpleCommand command, boolean isNextCommand) {
+        int next;
         String[] args = command.getIdentifier().split("\\.");
-
-        int next = isNextCommand ? 1 : 0;
-
+        int n = next = isNextCommand ? 1 : 0;
         if (inputs.length > args.length) {
             return false;
         }
-        //inputs has to be smaller than the command for autocomplete to work
-        for (int i = 1; i < inputs.length - 1 + next; i++) {
+        for (int i = 1; i < inputs.length - 1 + next; ++i) {
             if (args[i].equals("*")) {
-                wildCards.add(i);
+                this.wildCards.add(i);
                 continue;
             }
-            if (!args[i].equals(inputs[i])) {
-                return false;
-            }
+            if (args[i].equals(inputs[i])) continue;
+            return false;
         }
         if (!isNextCommand) {
-            return args[inputs.length - 1].startsWith(inputs[inputs.length - 1]) || args[
-                    inputs.length
-                            - 1].equals("*");
+            return args[inputs.length - 1].startsWith(inputs[inputs.length - 1]) || args[inputs.length - 1].equals("*");
         }
-
         return true;
     }
 
@@ -83,111 +71,68 @@ public class ComparisonResult {
         return id.equals(inputs[0]);
     }
 
-
     public List<Integer> getWildCards() {
-        return Collections.unmodifiableList(wildCards);
+        return Collections.unmodifiableList(this.wildCards);
     }
 
     private boolean findAliasingCommand(String input, SimpleCommand command) {
         String id = command.getIdentifier().split("\\.")[0];
-
-        SimpleCommand it = commands.get(id);
-
+        SimpleCommand it = this.commands.get(id);
         if (it == null) {
             return false;
         }
-
         if (it.getIdentifier().equals(id)) {
             for (String alias : it.getAliases()) {
-                if (alias.equals(input)) {
-                    return true;
-                }
+                if (!alias.equals(input)) continue;
+                return true;
             }
         }
         return false;
-
     }
 
     public List<String> tabComplete(String identifier) {
-
-        String[] results = match(identifier);
-
+        String[] results = this.match(identifier);
         String[] inputs = identifier.split("\\.");
         boolean isNextCommand = identifier.charAt(identifier.length() - 1) == '.';
         int nextCommand = isNextCommand ? 1 : 0;
-
-        // Extra processing
-        List<String> toReturn = new ArrayList<>();
+        ArrayList<String> toReturn = new ArrayList<String>();
         for (String str : results) {
-            if (commands.get(str) == null) {
+            if (this.commands.get(str) == null) {
                 System.out.println("Command:" + str + " not found");
                 continue;
             }
-
             if (str.equals(identifier)) {
                 toReturn.add("");
                 continue;
             }
-
             String[] inputs2 = str.split("\\.");
-
-            //for cases where identifier is "is.invite." but str is "is.invite"
-            //or for cases where identifier is "is.i." but partial match still pulls through with "is.invite"
-            if (isNextCommand &&
-                    (inputs.length == inputs2.length)) {
-                continue;
-            }
-
-            //if it is an alias, stop from putting itself
-            if (!isNextCommand &&
-                    commands.containsKey(inputs2[inputs.length - 1]) &&
-                    findAliasingCommand(inputs[inputs.length - 1],
-                            commands.get(inputs2[inputs.length - 1]))) {
+            if (isNextCommand && inputs.length == inputs2.length) continue;
+            if (!isNextCommand && this.commands.containsKey(inputs2[inputs.length - 1]) && this.findAliasingCommand(inputs[inputs.length - 1], this.commands.get(inputs2[inputs.length - 1]))) {
                 toReturn.add("");
                 continue;
             }
-
-            //if the one in question is a wildcard
             if (inputs2[inputs.length - 1 + nextCommand].equals("*")) {
                 int wildcardN = 0;
-
-                for (int i = 1; i < inputs.length + nextCommand; i++) {
-                    if (inputs2[i].equals("*")) {
-                        wildcardN++;
-                    }
+                for (int i = 1; i < inputs.length + nextCommand; ++i) {
+                    if (!inputs2[i].equals("*")) continue;
+                    ++wildcardN;
                 }
-
-                //if the command has that wildcard
-                if (commands.get(str).tabCompleteWildcards().containsKey(wildcardN)) {
-                    List<String> wildcards = commands.get(str).tabCompleteWildcards()
-                            .get(wildcardN);
-                    if (!isNextCommand) {
-                        wildcards = wildcards.stream()
-                                .filter(card -> card.startsWith(inputs[inputs.length - 1]))
-                                .collect(Collectors.toList());
-                    }
-
-                    toReturn.addAll(wildcards);
+                if (!this.commands.get(str).tabCompleteWildcards().containsKey(wildcardN)) continue;
+                List<String> wildcards = this.commands.get(str).tabCompleteWildcards().get(wildcardN);
+                if (!isNextCommand) {
+                    wildcards = wildcards.stream().filter(card -> card.startsWith(inputs[inputs.length - 1])).collect(Collectors.toList());
                 }
+                toReturn.addAll(wildcards);
+                continue;
             }
-
-            //get the command you're looking for
-            else {
-                //if the identifier ends with ".", put in next command
-                if (isNextCommand) {
-                    toReturn.add(inputs2[inputs.length]);
-                    continue;
-                }
-
-                //in case the identifier is "island" and comparing to "island.go", "island" shouldn't be in the toReturn
-                if (!inputs2[inputs.length - 1].equals(inputs[inputs.length - 1])) {
-                    toReturn.add(inputs2[inputs.length - 1]);
-                }
+            if (isNextCommand) {
+                toReturn.add(inputs2[inputs.length]);
+                continue;
             }
+            if (inputs2[inputs.length - 1].equals(inputs[inputs.length - 1])) continue;
+            toReturn.add(inputs2[inputs.length - 1]);
         }
         return toReturn.stream().distinct().collect(Collectors.toList());
     }
-
-
 }
 

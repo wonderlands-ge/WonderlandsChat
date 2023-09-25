@@ -1,6 +1,22 @@
+/*
+ * Decompiled with CFR 0.150.
+ * 
+ * Could not load the following classes:
+ *  org.bukkit.Bukkit
+ *  org.bukkit.entity.Player
+ *  org.bukkit.event.inventory.InventoryClickEvent
+ *  org.bukkit.inventory.Inventory
+ *  org.bukkit.inventory.InventoryHolder
+ *  org.bukkit.inventory.ItemStack
+ */
 package me.imlukas.wonderlandschat.utils.menu.base;
 
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import me.imlukas.wonderlandschat.utils.concurrent.MainThreadExecutor;
 import me.imlukas.wonderlandschat.utils.item.ItemUtil;
 import me.imlukas.wonderlandschat.utils.menu.element.MenuElement;
@@ -12,34 +28,27 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
-
-public class BaseMenu implements InventoryHolder {
-
+public class BaseMenu
+implements InventoryHolder {
     private final Inventory inventory;
     private final UUID destinationPlayerId;
-
-    private final List<Renderable> renderables = new ArrayList<>();
-    private final Map<Integer, MenuElement> elements = new HashMap<>();
-
+    private final List<Renderable> renderables = new ArrayList<Renderable>();
+    private final Map<Integer, MenuElement> elements = new HashMap<Integer, MenuElement>();
     private Runnable closeTask;
-
     private boolean allowRemoveItems = false;
 
-
     public BaseMenu(UUID playerId, String title, int rows) {
-        this.inventory = Bukkit.createInventory(this, rows * 9, title);
+        this.inventory = Bukkit.createInventory((InventoryHolder)this, (int)(rows * 9), (String)title);
         this.destinationPlayerId = playerId;
     }
 
-    @Override
     public Inventory getInventory() {
-        return inventory;
+        return this.inventory;
     }
 
     public void clearElements() {
-        elements.clear();
-        forceUpdate();
+        this.elements.clear();
+        this.forceUpdate();
     }
 
     public void open() {
@@ -47,50 +56,41 @@ public class BaseMenu implements InventoryHolder {
             MainThreadExecutor.MAIN_THREAD_EXECUTOR.execute(this::open);
             return;
         }
-
-        Player player = getPlayer();
-
+        Player player = this.getPlayer();
         if (player == null) {
             return;
         }
-
-        player.openInventory(inventory);
+        player.openInventory(this.inventory);
     }
 
     public Player getPlayer() {
-        return Bukkit.getPlayer(destinationPlayerId);
+        return Bukkit.getPlayer((UUID)this.destinationPlayerId);
     }
 
-    public void addRenderable(Renderable... renderable) {
-        renderables.addAll(Arrays.asList(renderable));
+    public void addRenderable(Renderable ... renderable) {
+        this.renderables.addAll(Arrays.asList(renderable));
     }
 
     public void forceUpdate() {
-        Player player = getPlayer();
-
+        Player player = this.getPlayer();
         if (player == null) {
             return;
         }
-
-        for (Renderable renderable : renderables) {
-            if (renderable.isActive()) {
-                renderable.forceUpdate();
-            }
+        for (Renderable renderable : this.renderables) {
+            if (!renderable.isActive()) continue;
+            renderable.forceUpdate();
         }
-
-        for (Map.Entry<Integer, MenuElement> entry : elements.entrySet()) {
-            int slot = entry.getKey();
-            MenuElement element = entry.getValue();
-
+        for (Map.Entry entry : this.elements.entrySet()) {
+            int slot = (Integer)entry.getKey();
+            MenuElement element = (MenuElement)entry.getValue();
             ItemStack item = element.getDisplayItem().clone();
-
             ItemUtil.replacePlaceholder(item, player, element.getItemPlaceholders());
-            inventory.setItem(slot, item);
+            this.inventory.setItem(slot, item);
         }
     }
 
     public void setElement(int slot, MenuElement element) {
-        elements.put(slot, element);
+        this.elements.put(slot, element);
     }
 
     public void setAllowRemoveItems(boolean allowRemoveItems) {
@@ -102,33 +102,31 @@ public class BaseMenu implements InventoryHolder {
     }
 
     public boolean isAllowRemoveItems() {
-        return allowRemoveItems;
+        return this.allowRemoveItems;
     }
 
     public void handleClick(InventoryClickEvent event) {
         int slot = event.getRawSlot();
-
-        if (slot < 0 || slot >= inventory.getSize()) {
+        if (slot < 0 || slot >= this.inventory.getSize()) {
             if (event.isShiftClick()) {
                 event.setCancelled(true);
             }
             return;
         }
-
-        MenuElement element = elements.get(slot);
-
+        MenuElement element = this.elements.get(slot);
         if (element == null) {
             return;
         }
-
         element.handle(event);
-
-        if (!allowRemoveItems)
+        if (!this.allowRemoveItems) {
             event.setCancelled(true);
+        }
     }
 
     public void handleClose() {
-        if (closeTask != null)
-            closeTask.run();
+        if (this.closeTask != null) {
+            this.closeTask.run();
+        }
     }
 }
+

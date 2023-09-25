@@ -1,9 +1,11 @@
+/*
+ * Decompiled with CFR 0.150.
+ */
 package me.imlukas.wonderlandschat.utils.menu.element;
 
 import me.imlukas.wonderlandschat.utils.menu.base.BaseMenu;
 
 public abstract class Renderable {
-
     protected BaseMenu menu;
     private boolean active = true;
 
@@ -12,14 +14,14 @@ public abstract class Renderable {
     }
 
     public boolean isActive() {
-        return active;
+        return this.active;
     }
 
     public void setActive(boolean active) {
         this.active = active;
-        forceUpdate();
+        this.forceUpdate();
     }
 
     public abstract void forceUpdate();
-
 }
+

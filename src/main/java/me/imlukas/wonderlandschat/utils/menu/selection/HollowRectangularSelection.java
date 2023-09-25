@@ -1,14 +1,16 @@
+/*
+ * Decompiled with CFR 0.150.
+ */
 package me.imlukas.wonderlandschat.utils.menu.selection;
-
-import me.imlukas.wonderlandschat.utils.menu.math.Point;
 
 import java.util.ArrayList;
 import java.util.List;
+import me.imlukas.wonderlandschat.utils.menu.math.Point;
+import me.imlukas.wonderlandschat.utils.menu.selection.Selection;
 
-public class HollowRectangularSelection implements Selection {
-
+public class HollowRectangularSelection
+implements Selection {
     private int thickness = 1;
-
     private final Point firstPoint;
     private final Point secondPoint;
 
@@ -24,25 +26,21 @@ public class HollowRectangularSelection implements Selection {
     }
 
     public int getThickness() {
-        return thickness;
+        return this.thickness;
     }
 
     public void setThickness(int thickness) {
         this.thickness = thickness;
     }
 
-
     @Override
     public List<Integer> getSlots() {
-        List<Integer> slots = new ArrayList<>();
-
-        for (int thickness = 0; thickness < this.thickness; thickness++) {
+        ArrayList<Integer> slots = new ArrayList<Integer>();
+        for (int thickness = 0; thickness < this.thickness; ++thickness) {
             Point firstPoint = new Point(this.firstPoint.getX() + thickness, this.firstPoint.getY() + thickness);
             Point secondPoint = new Point(this.secondPoint.getX() - thickness, this.secondPoint.getY() - thickness);
-
-            slots.addAll(getSlots(firstPoint, secondPoint));
+            slots.addAll(this.getSlots(firstPoint, secondPoint));
         }
-
         return slots;
     }
 
@@ -51,18 +49,16 @@ public class HollowRectangularSelection implements Selection {
     }
 
     private List<Integer> getSlots(Point firstPoint, Point secondPoint) {
-        List<Integer> slots = new ArrayList<>();
-
-        for (int x = firstPoint.getX(); x <= secondPoint.getX(); x++) {
-            slots.add(getSlot(x, firstPoint.getY()));
-            slots.add(getSlot(x, secondPoint.getY()));
+        ArrayList<Integer> slots = new ArrayList<Integer>();
+        for (int x = firstPoint.getX(); x <= secondPoint.getX(); ++x) {
+            slots.add(this.getSlot(x, firstPoint.getY()));
+            slots.add(this.getSlot(x, secondPoint.getY()));
         }
-
-        for (int y = firstPoint.getY(); y <= secondPoint.getY(); y++) {
-            slots.add(getSlot(firstPoint.getX(), y));
-            slots.add(getSlot(secondPoint.getX(), y));
+        for (int y = firstPoint.getY(); y <= secondPoint.getY(); ++y) {
+            slots.add(this.getSlot(firstPoint.getX(), y));
+            slots.add(this.getSlot(secondPoint.getX(), y));
         }
-
         return slots;
     }
 }
+

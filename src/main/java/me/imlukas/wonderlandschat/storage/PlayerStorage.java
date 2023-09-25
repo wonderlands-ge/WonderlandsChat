@@ -1,41 +1,39 @@
+/*
+ * Decompiled with CFR 0.150.
+ */
 package me.imlukas.wonderlandschat.storage;
-
-import me.imlukas.wonderlandschat.data.PlayerData;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import me.imlukas.wonderlandschat.data.PlayerData;
 
-/**
- * Stores all the player data.
- */
-public class PlayerStorage{
-
-    private final Map<UUID, PlayerData> playerData = new HashMap<>();
+public class PlayerStorage {
+    private final Map<UUID, PlayerData> playerData = new HashMap<UUID, PlayerData>();
 
     public PlayerData getPlayerData(UUID uuid) {
-        return playerData.get(uuid);
+        return this.playerData.get(uuid);
     }
 
     public PlayerData getOrCreatePlayerData(UUID uuid) {
-        if (playerData.containsKey(uuid)) {
-            return getPlayerData(uuid);
-        } else {
-            PlayerData data = new PlayerData(uuid);
-            add(uuid, data);
-            return data;
+        if (this.playerData.containsKey(uuid)) {
+            return this.getPlayerData(uuid);
         }
+        PlayerData data = new PlayerData(uuid);
+        this.add(uuid, data);
+        return data;
     }
 
     public void add(UUID uuid, PlayerData data) {
-        playerData.put(uuid, data);
+        this.playerData.put(uuid, data);
     }
 
     public void remove(UUID uuid) {
-        playerData.remove(uuid);
+        this.playerData.remove(uuid);
     }
 
     public boolean contains(UUID uuid) {
-        return playerData.containsKey(uuid);
+        return this.playerData.containsKey(uuid);
     }
 }
+

@@ -1,7 +1,9 @@
+/*
+ * Decompiled with CFR 0.150.
+ */
 package me.imlukas.wonderlandschat.utils.concurrent;
 
 public class Reference<T> {
-
     private T value;
 
     public Reference(T value) {
@@ -12,15 +14,15 @@ public class Reference<T> {
     }
 
     public T get() {
-        return value;
+        return this.value;
     }
 
     public void set(T value) {
         this.value = value;
     }
 
-    @Override
     public String toString() {
-        return value.toString();
+        return this.value.toString();
     }
 }
+

@@ -1,115 +1,115 @@
+/*
+ * Decompiled with CFR 0.150.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.lang.StringEscapeUtils
+ *  org.bukkit.ChatColor
+ *  org.bukkit.command.CommandSender
+ */
 package me.imlukas.wonderlandschat.utils.storage;
-
-import lombok.Getter;
-import me.imlukas.wonderlandschat.WonderlandsChatPlugin;
-import me.imlukas.wonderlandschat.utils.text.Placeholder;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import me.imlukas.wonderlandschat.WonderlandsChatPlugin;
+import me.imlukas.wonderlandschat.utils.storage.YMLBase;
+import me.imlukas.wonderlandschat.utils.text.Placeholder;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
-public class MessagesFile extends YMLBase {
-
-    private final Pattern pattern;
-    @Getter
-    private final String prefix;
-    @Getter
-    private boolean usePrefixConfig;
+public class MessagesFile
+extends YMLBase {
+    private final Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
+    private final String prefix = StringEscapeUtils.unescapeJava((String)this.getConfiguration().getString("messages.prefix"));
+    private boolean usePrefixConfig = this.getConfiguration().getBoolean("messages.use-prefix");
     private String msg;
 
     public MessagesFile(WonderlandsChatPlugin plugin) {
         super(plugin, new File(plugin.getDataFolder(), "messages.yml"), true);
-        pattern = Pattern.compile("#[a-fA-F0-9]{6}");
-        prefix = StringEscapeUtils.unescapeJava(getConfiguration().getString("messages.prefix"));
-        usePrefixConfig = getConfiguration().getBoolean("messages.use-prefix");
-
     }
 
     public String setColor(String message) {
-        return ChatColor.translateAlternateColorCodes('&', message);
+        return ChatColor.translateAlternateColorCodes((char)'&', (String)message);
     }
 
     private String setMessage(String name) {
-        return setMessage(name, (s) -> s);
+        return this.setMessage(name, s -> s);
     }
 
     private String setMessage(String name, Function<String, String> action) {
-        if (!getConfiguration().contains("messages." + name))
+        if (!this.getConfiguration().contains("messages." + name)) {
             return "";
-        msg = getMessage(name);
-        if (usePrefixConfig) {
-            msg = prefix + " " + getMessage(name);
-        } else {
-            msg = getMessage(name).replace("%prefix%", prefix);
         }
-        msg = action.apply(msg);
-        return setColor(msg);
+        this.msg = this.getMessage(name);
+        this.msg = this.usePrefixConfig ? this.prefix + " " + this.getMessage(name) : this.getMessage(name).replace("%prefix%", this.prefix);
+        this.msg = action.apply(this.msg);
+        return this.setColor(this.msg);
     }
 
     public void sendStringMessage(CommandSender player, String msg) {
-        player.sendMessage(setColor(msg));
+        player.sendMessage(this.setColor(msg));
     }
 
     public void sendMessage(CommandSender sender, String name) {
-        sendMessage(sender, name, (s) -> s);
+        this.sendMessage(sender, name, (String s) -> s);
     }
 
-
     @SafeVarargs
-    public final <T extends CommandSender> void sendMessage(T sender, String name, Placeholder<T>... placeholders) {
-        sendMessage(sender, name, (text) -> {
-            for (Placeholder<T> placeholder : placeholders) {
-                text = placeholder.replace(text, sender);
+    public final <T extends CommandSender> void sendMessage(T sender, String name, Placeholder<T> ... placeholders) {
+        this.sendMessage(sender, name, (String text) -> {
+            for (Placeholder placeholder : placeholders) {
+                text = placeholder.replace((String)text, sender);
             }
-
             return text;
         });
     }
 
     public final <T extends CommandSender> void sendMessage(T sender, String name, Collection<Placeholder<T>> placeholders) {
-        sendMessage(sender, name, (text) -> {
-            for (Placeholder<T> placeholder : placeholders) {
-                text = placeholder.replace(text, sender);
+        this.sendMessage(sender, name, (String text) -> {
+            for (Placeholder placeholder : placeholders) {
+                text = placeholder.replace((String)text, sender);
             }
-
             return text;
         });
     }
 
-
     public void sendMessage(CommandSender sender, String name, Function<String, String> action) {
-        if (getConfiguration().isList("messages." + name)) {
-            for (String str : getConfiguration().getStringList("messages." + name)) {
-                msg = StringEscapeUtils.unescapeJava(str.replace("%prefix%", prefix));
-                msg = action.apply(msg);
-                sender.sendMessage(setColor(msg));
+        if (this.getConfiguration().isList("messages." + name)) {
+            for (String str : this.getConfiguration().getStringList("messages." + name)) {
+                this.msg = StringEscapeUtils.unescapeJava((String)str.replace("%prefix%", this.prefix));
+                this.msg = action.apply(this.msg);
+                sender.sendMessage(this.setColor(this.msg));
             }
             return;
         }
-
-        msg = setMessage(name, action);
-        sender.sendMessage(msg);
+        this.msg = this.setMessage(name, action);
+        sender.sendMessage(this.msg);
     }
 
     public String getMessage(String name) {
-        return getConfiguration().getString("messages." + name);
+        return this.getConfiguration().getString("messages." + name);
     }
 
-
     public boolean togglePrefix() {
-        boolean isEnabled = usePrefixConfig;
+        boolean isEnabled = this.usePrefixConfig;
         if (isEnabled) {
-            getConfiguration().set("messages.use-prefix", false);
+            this.getConfiguration().set("messages.use-prefix", (Object)false);
         } else {
-            getConfiguration().set("messages.use-prefix", true);
+            this.getConfiguration().set("messages.use-prefix", (Object)true);
         }
-        save();
-        usePrefixConfig = !isEnabled;
+        this.save();
+        this.usePrefixConfig = !isEnabled;
         return !isEnabled;
+    }
+
+    public String getPrefix() {
+        return this.prefix;
+    }
+
+    public boolean isUsePrefixConfig() {
+        return this.usePrefixConfig;
     }
 }
 

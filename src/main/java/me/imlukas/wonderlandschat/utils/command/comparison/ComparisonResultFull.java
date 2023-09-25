@@ -1,87 +1,63 @@
+/*
+ * Decompiled with CFR 0.150.
+ */
 package me.imlukas.wonderlandschat.utils.command.comparison;
-
-
-import me.imlukas.wonderlandschat.utils.command.SimpleCommand;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import me.imlukas.wonderlandschat.utils.command.SimpleCommand;
 
 public class ComparisonResultFull {
-
     private final Map<String, SimpleCommand> commands;
     private final LinkedList<Integer> wildCards;
 
     public ComparisonResultFull(Map<String, SimpleCommand> commands) {
         this.commands = commands;
-        this.wildCards = new LinkedList<>();
+        this.wildCards = new LinkedList();
     }
 
     public SimpleCommand match(String input) {
         String[] inputs = input.split("\\.");
-
-        //in case input is empty
         if (inputs.length == 0) {
             return null;
         }
-
-        //case alias.arg
-        //first take out the alias
-        for (SimpleCommand command : commands.values()) {
+        for (SimpleCommand command : this.commands.values()) {
             if (inputs.length == 1) {
-                if (command.getIdentifier().equalsIgnoreCase(input) || searchAliases(input,
-                        command)) {
-                    return command;
-                }
+                if (!command.getIdentifier().equalsIgnoreCase(input) && !this.searchAliases(input, command)) continue;
+                return command;
             }
-            //case for alias.command
-            //if it's an alias of another command
-            else {
-                if (findAliasingCommand(inputs[0], command)) {
-                    if (searchArgs(inputs, command)) {
-                        return command;
-                    }
-                }
-
-                //look for identifiers
-                if (searchIds(inputs, command)) {
-
-                    if (searchArgs(inputs, command)) {
-                        return command;
-
-                    }
-                }
+            if (this.findAliasingCommand(inputs[0], command) && this.searchArgs(inputs, command)) {
+                return command;
             }
+            if (!this.searchIds(inputs, command) || !this.searchArgs(inputs, command)) continue;
+            return command;
         }
         return null;
     }
 
     private boolean searchArgs(String[] inputs, SimpleCommand command) {
         String[] args = command.getIdentifier().split("\\.");
-
         if (inputs.length > args.length) {
             return false;
         }
-
-        for (int i = 1; i < inputs.length; i++) {
+        for (int i = 1; i < inputs.length; ++i) {
             if (args[i].equals("*")) {
-                wildCards.add(i);
+                this.wildCards.add(i);
                 continue;
             }
-            if (!args[i].equals(inputs[i])) {
-                return false;
-            }
+            if (args[i].equals(inputs[i])) continue;
+            return false;
         }
         return true;
     }
 
     private boolean searchAliases(String input, SimpleCommand command) {
-        String[] aliases = command.getAliases();
-        for (String alias : aliases) {
-            if (alias.equals(input)) {
-                return true;
-            }
+        String[] aliases;
+        for (String alias : aliases = command.getAliases()) {
+            if (!alias.equals(input)) continue;
+            return true;
         }
         return false;
     }
@@ -94,27 +70,21 @@ public class ComparisonResultFull {
 
     private boolean findAliasingCommand(String input, SimpleCommand command) {
         String id = command.getIdentifier().split("\\.")[0];
-
-        SimpleCommand it = commands.get(id);
-
+        SimpleCommand it = this.commands.get(id);
         if (it == null) {
             return false;
         }
-
         if (it.getIdentifier().equals(id)) {
             for (String alias : it.getAliases()) {
-                if (alias.equals(input)) {
-                    return true;
-                }
+                if (!alias.equals(input)) continue;
+                return true;
             }
         }
         return false;
-
     }
 
     public List<Integer> getWildCards() {
-        return Collections.unmodifiableList(wildCards);
+        return Collections.unmodifiableList(this.wildCards);
     }
-
-
 }
+

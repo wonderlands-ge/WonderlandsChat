@@ -1,17 +1,19 @@
+/*
+ * Decompiled with CFR 0.150.
+ * 
+ * Could not load the following classes:
+ *  org.bukkit.entity.Player
+ */
 package me.imlukas.wonderlandschat.data;
 
+import java.util.UUID;
 import me.imlukas.wonderlandschat.utils.TextUtil;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
-
-/**
- * Stores all information about a player and their chat color and format.
- */
 public class PlayerData {
-
     private final UUID uuid;
-    private String format, color;
+    private String format;
+    private String color;
     private boolean randomColor;
 
     public PlayerData(UUID uuid) {
@@ -19,6 +21,7 @@ public class PlayerData {
         this.color = "";
         this.format = "";
     }
+
     public PlayerData(Player player) {
         this.uuid = player.getUniqueId();
         this.color = "";
@@ -38,28 +41,25 @@ public class PlayerData {
     }
 
     public UUID getUUID() {
-        return uuid;
+        return this.uuid;
     }
 
     public String getFormat() {
-        return format;
+        return this.format;
     }
 
     public String getColor() {
-        if (isRandomColor()) {
+        if (this.isRandomColor()) {
             return "random";
         }
-
-        return color;
+        return this.color;
     }
 
     public String getFormatted() {
-
-        if (isRandomColor()) {
-            setColor(TextUtil.getRandomColor());
+        if (this.isRandomColor()) {
+            this.setColor(TextUtil.getRandomColor());
         }
-
-        return color + format;
+        return this.color + this.format;
     }
 
     public void setFormat(String format) {
@@ -78,7 +78,7 @@ public class PlayerData {
     }
 
     public boolean isRandomColor() {
-        return randomColor;
+        return this.randomColor;
     }
-
 }
+

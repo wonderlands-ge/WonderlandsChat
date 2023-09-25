@@ -1,9 +1,11 @@
+/*
+ * Decompiled with CFR 0.150.
+ */
 package me.imlukas.wonderlandschat.utils.menu.selection;
 
 import java.util.List;
 
 public interface Selection {
-
-    List<Integer> getSlots();
-
+    public List<Integer> getSlots();
 }
+
